@@ -1,7 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { LeaderboardEntry } from '@/types/student';
+
+interface LeaderboardProps {
+  grade: 1 | 2 | 3;
+  onStartQuiz: () => void;
+}
+
+const MEDAL_EMOJIS = ['🥇', '🥈', '🥉'];
 
 const ALLOWED_TEACHERS = [
   '원동현', '강윤용', '김도일', '김의성', '김하은',
@@ -11,25 +18,13 @@ const ALLOWED_TEACHERS = [
   '홍효주', '조율'
 ];
 
-interface LeaderboardProps {
-  grade: 1 | 2 | 3;
-  onStartQuiz: () => void;
-}
-
-const MEDAL_EMOJIS = ['🥇', '🥈', '🥉'];
-
 export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [teacherName, setTeacherName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [nameError, setNameError] = useState<string>('');
 
-  useEffect(() => {
-    fetchLeaderboard();
-  }, [grade]);
-
-  const fetchLeaderboard = async () => {
+  const fetchLeaderboard = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await fetch(`/api/leaderboard?grade=${grade}`);
@@ -42,19 +37,20 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [grade]);
+
+  useEffect(() => {
+    fetchLeaderboard();
+  }, [fetchLeaderboard]);
 
   const handleStartQuiz = () => {
     const trimmedName = teacherName.trim();
-    setNameError('');
-
     if (!trimmedName) {
-      setNameError('선생님 이름을 입력해주세요.');
+      alert('선생님 성함을 입력해주세요.');
       return;
     }
-
     if (!ALLOWED_TEACHERS.includes(trimmedName)) {
-      setNameError('등록되지 않은 선생님 이름입니다.');
+      alert('등록되지 않은 선생님 성함입니다.');
       return;
     }
 
@@ -96,29 +92,19 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
       <h2 className="text-2xl font-bold text-center mb-6 text-black">{grade}학년 이름 암기 명예의 전당</h2>
       
       <div className="mb-6">
-        <div className="relative">
-          <input
-            type="text"
-            value={teacherName}
-            onChange={(e) => {
-              setTeacherName(e.target.value);
-              setNameError('');
-            }}
-            placeholder="선생님 이름을 입력하세요"
-            className={`w-full p-3 border rounded-lg mb-2 text-black placeholder-gray-500 ${
-              nameError ? 'border-red-500' : 'border-gray-300'
-            }`}
-            list="teacherNames"
-          />
-          <datalist id="teacherNames">
-            {ALLOWED_TEACHERS.map((name) => (
-              <option key={name} value={name} />
-            ))}
-          </datalist>
-          {nameError && (
-            <p className="text-red-500 text-sm mb-2">{nameError}</p>
-          )}
-        </div>
+        <input
+          type="text"
+          value={teacherName}
+          onChange={(e) => setTeacherName(e.target.value)}
+          placeholder="선생님 이름을 입력하세요"
+          className="w-full p-3 border rounded-lg mb-4 text-black placeholder-gray-500"
+          list="teacherNames"
+        />
+        <datalist id="teacherNames">
+          {ALLOWED_TEACHERS.map((name) => (
+            <option key={name} value={name} />
+          ))}
+        </datalist>
         <button
           onClick={handleStartQuiz}
           className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-colors font-semibold"
@@ -129,7 +115,7 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
 
       <div className="space-y-4">
         {entries.length > 0 ? (
-          entries.slice(0, 10).map((entry, index) => (
+          entries.map((entry, index) => (
             <div
               key={`${entry.teacherName}-${entry.date}`}
               className={`p-4 rounded-lg ${

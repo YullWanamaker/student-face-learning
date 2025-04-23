@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { LearningMode, UserProgress, Leaderboard as LeaderboardType } from '@/types/student';
+import { LearningMode, UserProgress } from '@/types/student';
 import StudyMode from '@/components/StudyMode';
 import QuizMode from '@/components/QuizMode';
 import Leaderboard from '@/components/Leaderboard';
