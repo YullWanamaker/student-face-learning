@@ -183,7 +183,7 @@ export default function Home() {
             <button
               onClick={() => handleModeChange('study1')}
               className="px-8 py-4 bg-green-500 text-white rounded-lg text-lg font-semibold hover:bg-green-600 transition-colors"
-            >
+          >
               1학년
             </button>
             <button
@@ -268,7 +268,7 @@ export default function Home() {
           <button
             onClick={() => setMode('select')}
             className="absolute top-4 left-4 text-gray-600 hover:text-gray-800"
-          >
+        >
             ← 뒤로
           </button>
           <Leaderboard 
