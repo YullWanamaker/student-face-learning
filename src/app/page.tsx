@@ -127,7 +127,7 @@ export default function Home() {
   if (!showContent) {
   return (
       <main 
-        className="min-h-screen w-full bg-cover bg-center bg-no-repeat p-4 fixed inset-0 flex items-center justify-center"
+        className="min-h-screen w-full bg-cover bg-center bg-no-repeat p-4 fixed inset-0 overflow-y-auto"
         style={{
           backgroundImage: "url('/background.jpg')",
           backgroundSize: 'cover',
@@ -135,9 +135,9 @@ export default function Home() {
           backgroundAttachment: 'fixed'
         }}
       >
-        <div className="max-w-md mx-auto bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-8 text-center relative">
-          <h1 className="text-3xl font-bold mb-2">아이들 얼굴 익히기</h1>
-          <p className="text-sm text-gray-600 text-center mb-8 px-4">&ldquo;너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라&rdquo; (마태복음 6:33)</p>
+        <div className="max-w-md mx-auto bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-8 text-center relative">
+          <h1 className="text-3xl font-bold mb-2 text-gray-900">아이들 얼굴 익히기</h1>
+          <p className="text-sm text-gray-800 text-center mb-8 px-4">&ldquo;너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라&rdquo; (마태복음 6:33)</p>
           <div className="space-y-4">
             <button
               onClick={handleStartStudy}
@@ -160,7 +160,7 @@ export default function Home() {
   if (mode === 'selectStudy') {
     return (
       <main 
-        className="min-h-screen w-full bg-cover bg-center bg-no-repeat p-4 fixed inset-0 flex items-center justify-center"
+        className="min-h-screen w-full bg-cover bg-center bg-no-repeat p-4 fixed inset-0 overflow-y-auto"
         style={{
           backgroundImage: "url('/background.jpg')",
           backgroundSize: 'cover',
@@ -168,24 +168,24 @@ export default function Home() {
           backgroundAttachment: 'fixed'
         }}
       >
-        <div className="max-w-md mx-auto bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-8 text-center relative">
+        <div className="max-w-md mx-auto bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-8 text-center relative my-8">
           <button
             onClick={() => {
               setShowContent(false);
               setMode('start');
             }}
-            className="absolute top-4 left-4 text-gray-600 hover:text-gray-800"
+            className="absolute top-4 left-4 text-gray-800 hover:text-gray-900"
           >
             ← 뒤로
           </button>
-          <h1 className="text-3xl font-bold mb-2">학년 선택</h1>
-          <p className="text-sm text-gray-600 text-center mb-8 px-4">&ldquo;너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라&rdquo; (마태복음 6:33)</p>
+          <h1 className="text-3xl font-bold mb-2 text-gray-900">학년 선택</h1>
+          <p className="text-sm text-gray-800 text-center mb-8 px-4">&ldquo;너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라&rdquo; (마태복음 6:33)</p>
           
           <div className="grid grid-cols-1 gap-4">
             <button
               onClick={() => handleModeChange('study1')}
               className="px-8 py-4 bg-green-500 text-white rounded-lg text-lg font-semibold hover:bg-green-600 transition-colors"
-          >
+            >
               1학년
             </button>
             <button
@@ -209,7 +209,7 @@ export default function Home() {
   if (mode === 'select') {
     return (
       <main 
-        className="min-h-screen w-full bg-cover bg-center bg-no-repeat p-4 fixed inset-0 flex items-center justify-center"
+        className="min-h-screen w-full bg-cover bg-center bg-no-repeat p-4 fixed inset-0 overflow-y-auto"
         style={{
           backgroundImage: "url('/background.jpg')",
           backgroundSize: 'cover',
@@ -217,18 +217,18 @@ export default function Home() {
           backgroundAttachment: 'fixed'
         }}
       >
-        <div className="max-w-md mx-auto bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-8 text-center relative">
+        <div className="max-w-md mx-auto bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-8 text-center relative my-8">
           <button
             onClick={() => {
               setShowContent(false);
               setMode('start');
             }}
-            className="absolute top-4 left-4 text-gray-600 hover:text-gray-800"
+            className="absolute top-4 left-4 text-gray-800 hover:text-gray-900"
           >
             ← 뒤로
           </button>
-          <h1 className="text-3xl font-bold mb-2">학년 선택</h1>
-          <p className="text-sm text-gray-600 text-center mb-8 px-4">&ldquo;너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라&rdquo; (마태복음 6:33)</p>
+          <h1 className="text-3xl font-bold mb-2 text-gray-900">학년 선택</h1>
+          <p className="text-sm text-gray-800 text-center mb-8 px-4">&ldquo;너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라&rdquo; (마태복음 6:33)</p>
           
           <div className="grid grid-cols-1 gap-4">
             {[1, 2, 3].map((grade) => (
@@ -258,7 +258,7 @@ export default function Home() {
     const grade = parseInt(mode.replace('leaderboard', '')) as 1 | 2 | 3;
     return (
       <main 
-        className="min-h-screen w-full bg-cover bg-center bg-no-repeat p-4 fixed inset-0 flex items-center justify-center"
+        className="min-h-screen w-full bg-cover bg-center bg-no-repeat p-4 fixed inset-0 overflow-y-auto"
         style={{
           backgroundImage: "url('/background.jpg')",
           backgroundSize: 'cover',
@@ -266,10 +266,10 @@ export default function Home() {
           backgroundAttachment: 'fixed'
         }}
       >
-        <div className="max-w-md mx-auto bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-8 text-center relative">
+        <div className="max-w-md mx-auto bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-8 text-center relative my-8">
           <button
             onClick={() => setMode('select')}
-            className="absolute top-4 left-4 text-gray-600 hover:text-gray-800"
+            className="absolute top-4 left-4 text-gray-800 hover:text-gray-900"
         >
             ← 뒤로
           </button>
@@ -295,7 +295,7 @@ export default function Home() {
 
   return (
     <main 
-      className="min-h-screen w-full bg-cover bg-center bg-no-repeat p-4 fixed inset-0"
+      className="min-h-screen w-full bg-cover bg-center bg-no-repeat p-4 fixed inset-0 overflow-y-auto"
       style={{
         backgroundImage: "url('/background.jpg')",
         backgroundSize: 'cover',
@@ -303,7 +303,7 @@ export default function Home() {
         backgroundAttachment: 'fixed'
       }}
     >
-      <div className="max-w-md mx-auto bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-6 mt-8 relative z-10">
+      <div className="max-w-md mx-auto bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-6 mt-8 relative z-10">
         <div className="flex items-center justify-between mb-4">
           <button
             onClick={() => setMode(isStudyMode ? 'selectStudy' : 'select')}
@@ -314,10 +314,10 @@ export default function Home() {
           <h1 className="text-2xl font-bold text-center">{currentGrade}학년</h1>
         </div>
 
-        <p className="text-sm text-gray-600 text-center mb-4 px-4">&ldquo;너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라&rdquo; (마태복음 6:33)</p>
+        <p className="text-sm text-gray-800 text-center mb-4 px-4">&ldquo;너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라&rdquo; (마태복음 6:33)</p>
 
         {!isStudyMode && (
-          <div className="text-sm text-gray-600 text-center mb-4">
+          <div className="text-sm text-gray-800 text-center mb-4">
             최고 점수: {progress.highScores[mode as keyof typeof progress.highScores]}점
           </div>
         )}

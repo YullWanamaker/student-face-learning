@@ -58,7 +58,7 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
   };
 
   if (isLoading) {
-    return <div className="text-center py-8">리더보드를 불러오는 중...</div>;
+    return <div className="text-center py-8 text-gray-900">리더보드를 불러오는 중...</div>;
   }
 
   if (error) {
@@ -77,7 +77,7 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-center mb-6">{grade}학년 명예의 전당</h2>
+      <h2 className="text-2xl font-bold text-center mb-6 text-gray-900">{grade}학년 명예의 전당</h2>
       
       <div className="mb-6">
         <input
@@ -85,7 +85,7 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
           value={teacherName}
           onChange={(e) => setTeacherName(e.target.value)}
           placeholder="선생님 이름을 입력하세요"
-          className="w-full p-3 border rounded-lg mb-4"
+          className="w-full p-3 border rounded-lg mb-4 text-gray-900"
         />
         <button
           onClick={handleStartQuiz}
@@ -106,10 +106,10 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <span className="font-bold text-lg">
+                  <span className="font-bold text-lg text-gray-900">
                     {index < 3 ? MEDAL_EMOJIS[index] : `${index + 1}.`}
                   </span>
-                  <span className="font-semibold">{entry.teacherName}</span>
+                  <span className="font-semibold text-gray-900">{entry.teacherName}</span>
                 </div>
                 <div className="flex items-center space-x-4">
                   <span className={`font-bold ${
@@ -120,13 +120,13 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
                   }`}>
                     {entry.score}점
                   </span>
-                  <span className="text-sm text-gray-500">{entry.date}</span>
+                  <span className="text-sm text-gray-700">{entry.date}</span>
                 </div>
               </div>
             </div>
           ))
         ) : (
-          <div className="text-center text-gray-500 py-8">
+          <div className="text-center text-gray-700 py-8">
             아직 기록이 없습니다. 첫 번째 도전자가 되어보세요!
           </div>
         )}
