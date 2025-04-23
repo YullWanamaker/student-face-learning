@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { Student } from '@/types/student';
 import toast from 'react-hot-toast';
@@ -22,32 +22,22 @@ export default function QuizMode({ students, onComplete, onViewLeaderboard }: Qu
   const [isQuizComplete, setIsQuizComplete] = useState(false);
   const [finalScore, setFinalScore] = useState(0);
 
-  useEffect(() => {
-    const questions = generateQuizQuestions();
-    setQuizQuestions(questions);
-  }, [students]);
-
   const calculateScore = (correct: number, total: number) => {
-    // 정확한 백분율 계산 (소수점 첫째 자리에서 반올림)
     return Math.round((correct / total) * 100);
   };
 
-  const generateQuizQuestions = () => {
+  const generateQuizQuestions = useCallback(() => {
     const allQuestions = [];
-    const usedStudents = new Set<number>(); // 중복 방지를 위한 Set
+    const usedStudents = new Set<number>();
     
-    // 모든 학생에 대해 한 번씩 문제 생성
     while (usedStudents.size < students.length) {
-      // 아직 사용되지 않은 학생 중에서 정답 선택
       const availableStudents = students.filter(s => !usedStudents.has(s.id));
       const correctStudent = availableStudents[Math.floor(Math.random() * availableStudents.length)];
       usedStudents.add(correctStudent.id);
 
-      // 오답 보기 생성 (이미 선택된 정답은 제외)
       const otherStudents = students.filter(s => s.id !== correctStudent.id);
       const wrongOptions = otherStudents.sort(() => Math.random() - 0.5).slice(0, 3);
       
-      // 모든 보기를 섞어서 배열로 만듦
       const options = [...wrongOptions, correctStudent].sort(() => Math.random() - 0.5);
 
       allQuestions.push({
@@ -57,7 +47,12 @@ export default function QuizMode({ students, onComplete, onViewLeaderboard }: Qu
     }
 
     return allQuestions;
-  };
+  }, [students]);
+
+  useEffect(() => {
+    const questions = generateQuizQuestions();
+    setQuizQuestions(questions);
+  }, [generateQuizQuestions]);
 
   const handleAnswer = (selectedStudent: Student) => {
     if (selectedAnswer !== null) return; // 이미 답을 선택했으면 무시

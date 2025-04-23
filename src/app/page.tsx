@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { LearningMode, UserProgress, Leaderboard as LeaderboardType } from '@/types/student';
 import StudyMode from '@/components/StudyMode';
 import QuizMode from '@/components/QuizMode';
@@ -325,7 +325,8 @@ export default function Home() {
         ) : (
           <QuizMode 
             students={students} 
-            onComplete={(score: number) => handleQuizComplete(parseInt(currentGrade) as 1 | 2 | 3, score)} 
+            onComplete={(score: number) => handleQuizComplete(parseInt(currentGrade) as 1 | 2 | 3, score)}
+            onViewLeaderboard={() => setMode(`leaderboard${currentGrade}` as LearningMode)}
           />
         )}
     </div>
