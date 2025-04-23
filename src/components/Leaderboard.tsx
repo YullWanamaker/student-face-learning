@@ -3,6 +3,14 @@
 import { useState, useEffect } from 'react';
 import { LeaderboardEntry } from '@/types/student';
 
+const ALLOWED_TEACHERS = [
+  '원동현', '강윤용', '김도일', '김의성', '김하은',
+  '김하정', '문예찬', '박윤재', '신서영', '이성훈',
+  '이안나', '이예린', '이종섭', '이현정', '장대근',
+  '전기홍', '전용천', '최유나', '한효진', '함미정',
+  '홍효주', '조율'
+];
+
 interface LeaderboardProps {
   grade: 1 | 2 | 3;
   onStartQuiz: () => void;
@@ -15,6 +23,7 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
   const [teacherName, setTeacherName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [nameError, setNameError] = useState<string>('');
 
   useEffect(() => {
     fetchLeaderboard();
@@ -36,14 +45,21 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
   };
 
   const handleStartQuiz = () => {
-    if (!teacherName.trim()) {
-      alert('선생님 이름을 입력해주세요!');
+    const trimmedName = teacherName.trim();
+    setNameError('');
+
+    if (!trimmedName) {
+      setNameError('선생님 이름을 입력해주세요.');
       return;
     }
 
-    // 이름 중복 체크
+    if (!ALLOWED_TEACHERS.includes(trimmedName)) {
+      setNameError('등록되지 않은 선생님 이름입니다.');
+      return;
+    }
+
     const isDuplicate = entries.some(
-      entry => entry.teacherName.toLowerCase() === teacherName.trim().toLowerCase()
+      entry => entry.teacherName.toLowerCase() === trimmedName.toLowerCase()
     );
 
     if (isDuplicate) {
@@ -53,12 +69,12 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
       if (!confirmReplace) return;
     }
 
-    localStorage.setItem('currentTeacher', teacherName.trim());
+    localStorage.setItem('currentTeacher', trimmedName);
     onStartQuiz();
   };
 
   if (isLoading) {
-    return <div className="text-center py-8 text-gray-900">리더보드를 불러오는 중...</div>;
+    return <div className="text-center py-8 text-black font-medium">리더보드를 불러오는 중...</div>;
   }
 
   if (error) {
@@ -80,13 +96,29 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
       <h2 className="text-2xl font-bold text-center mb-6 text-black">{grade}학년 이름 암기 명예의 전당</h2>
       
       <div className="mb-6">
-        <input
-          type="text"
-          value={teacherName}
-          onChange={(e) => setTeacherName(e.target.value)}
-          placeholder="선생님 이름을 입력하세요"
-          className="w-full p-3 border rounded-lg mb-4 text-black placeholder-gray-500"
-        />
+        <div className="relative">
+          <input
+            type="text"
+            value={teacherName}
+            onChange={(e) => {
+              setTeacherName(e.target.value);
+              setNameError('');
+            }}
+            placeholder="선생님 이름을 입력하세요"
+            className={`w-full p-3 border rounded-lg mb-2 text-black placeholder-gray-500 ${
+              nameError ? 'border-red-500' : 'border-gray-300'
+            }`}
+            list="teacherNames"
+          />
+          <datalist id="teacherNames">
+            {ALLOWED_TEACHERS.map((name) => (
+              <option key={name} value={name} />
+            ))}
+          </datalist>
+          {nameError && (
+            <p className="text-red-500 text-sm mb-2">{nameError}</p>
+          )}
+        </div>
         <button
           onClick={handleStartQuiz}
           className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-colors font-semibold"
