@@ -1,19 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Student, LearningMode } from '@/types/student';
+import { Student } from '@/types/student';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
+import Image from 'next/image';
 
 interface StudyModeProps {
   students: Student[];
-  mode: LearningMode;
+  mode: string;
 }
 
 export default function StudyMode({ students, mode }: StudyModeProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showName, setShowName] = useState(mode === 'study1');
-  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const currentStudent = students[currentIndex];
 
@@ -23,11 +23,9 @@ export default function StudyMode({ students, mode }: StudyModeProps) {
 
   const handleNext = () => {
     if (currentIndex < students.length - 1) {
-      setIsTransitioning(true);
       setTimeout(() => {
         setCurrentIndex((prev) => prev + 1);
         setShowName(mode === 'study1');
-        setIsTransitioning(false);
       }, 300);
     } else {
       toast.success('모든 학생을 학습했습니다!');
@@ -36,11 +34,9 @@ export default function StudyMode({ students, mode }: StudyModeProps) {
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
-      setIsTransitioning(true);
       setTimeout(() => {
         setCurrentIndex((prev) => prev - 1);
         setShowName(mode === 'study1');
-        setIsTransitioning(false);
       }, 300);
     }
   };
@@ -63,12 +59,15 @@ export default function StudyMode({ students, mode }: StudyModeProps) {
             transition={{ duration: 0.3 }}
             className="absolute inset-0"
           >
-            <img
-              src={currentStudent.image}
-              alt={currentStudent.name}
-              className="w-full h-full object-cover rounded-lg shadow-lg"
-              onClick={toggleName}
-            />
+            <div className="relative w-full h-full">
+              <Image
+                src={currentStudent.image}
+                alt={currentStudent.name}
+                fill
+                className="object-cover rounded-lg shadow-lg"
+                onClick={toggleName}
+              />
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>

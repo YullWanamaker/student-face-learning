@@ -19,7 +19,7 @@ const ALLOWED_TEACHERS = [
 export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
   const [teacherName, setTeacherName] = useState('');
   const [error, setError] = useState('');
-  const [leaderboard, setLeaderboard] = useState<LeaderboardType>(() => {
+  const [leaderboard] = useState<LeaderboardType>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('leaderboard');
       if (saved) {

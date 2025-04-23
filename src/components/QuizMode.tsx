@@ -23,10 +23,9 @@ export default function QuizMode({ students, onComplete, onViewLeaderboard }: Qu
   const [finalScore, setFinalScore] = useState(0);
 
   useEffect(() => {
-    // 모든 문제를 미리 생성
     const questions = generateQuizQuestions();
     setQuizQuestions(questions);
-  }, []);
+  }, [students]);
 
   const calculateScore = (correct: number, total: number) => {
     // 정확한 백분율 계산 (소수점 첫째 자리에서 반올림)
@@ -170,7 +169,7 @@ export default function QuizMode({ students, onComplete, onViewLeaderboard }: Qu
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        {currentQuizQuestion.options.map((student, index) => (
+        {currentQuizQuestion.options.map((student) => (
           <button
             key={student.id}
             onClick={() => handleAnswer(student)}
