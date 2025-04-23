@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import { Leaderboard as LeaderboardType, LeaderboardEntry } from '@/types/student';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { LeaderboardEntry } from '@/types/student';
 
 interface LeaderboardProps {
   grade: 1 | 2 | 3;
@@ -8,136 +10,127 @@ interface LeaderboardProps {
 
 const MEDAL_EMOJIS = ['🥇', '🥈', '🥉'];
 
-const ALLOWED_TEACHERS = [
-  '원동현', '강윤용', '김도일', '김의성', '김하은',
-  '김하정', '문예찬', '박윤재', '신서영', '이성훈',
-  '이안나', '이예린', '이종섭', '이현정', '장대근',
-  '전기홍', '전용천', '최유나', '한효진', '함미정',
-  '홍효주', '조율'
-];
-
 export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
+  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [teacherName, setTeacherName] = useState('');
-  const [error, setError] = useState('');
-  const [leaderboard] = useState<LeaderboardType>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('leaderboard');
-      if (saved) {
-        return JSON.parse(saved);
-      }
-    }
-    return {
-      grade1: [],
-      grade2: [],
-      grade3: [],
-    };
-  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleTeacherNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.value;
-    setTeacherName(name);
-    setError('');
+  useEffect(() => {
+    fetchLeaderboard();
+  }, [grade]);
+
+  const fetchLeaderboard = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`/api/leaderboard?grade=${grade}`);
+      if (!response.ok) throw new Error('Failed to fetch leaderboard');
+      const data = await response.json();
+      setEntries(data || []);
+    } catch (err) {
+      setError('리더보드를 불러오는데 실패했습니다.');
+      console.error('Error fetching leaderboard:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleStartQuiz = () => {
-    const trimmedName = teacherName.trim();
-    if (!trimmedName) {
-      setError('선생님 성함을 입력해주세요.');
+    if (!teacherName.trim()) {
+      alert('선생님 이름을 입력해주세요!');
       return;
     }
-    if (!ALLOWED_TEACHERS.includes(trimmedName)) {
-      setError('등록되지 않은 선생님 성함입니다.');
-      return;
+
+    // 이름 중복 체크
+    const isDuplicate = entries.some(
+      entry => entry.teacherName.toLowerCase() === teacherName.trim().toLowerCase()
+    );
+
+    if (isDuplicate) {
+      const confirmReplace = window.confirm(
+        '이미 등록된 이름입니다. 같은 이름으로 계속 진행하시겠습니까?\n(기존 점수는 새로운 점수로 대체됩니다)'
+      );
+      if (!confirmReplace) return;
     }
+
+    localStorage.setItem('currentTeacher', teacherName.trim());
     onStartQuiz();
   };
 
-  // 각 이름당 최신 점수만 필터링
-  const filterLatestScores = (entries: LeaderboardEntry[]) => {
-    const nameMap = new Map<string, LeaderboardEntry>();
-    
-    entries.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-      .forEach(entry => {
-        nameMap.set(entry.teacherName.toLowerCase().trim(), entry);
-      });
-    
-    return Array.from(nameMap.values());
-  };
+  if (isLoading) {
+    return <div className="text-center py-8">리더보드를 불러오는 중...</div>;
+  }
 
-  const currentGradeLeaderboard = filterLatestScores(
-    leaderboard[`grade${grade}` as keyof LeaderboardType]
-  )
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 10);
+  if (error) {
+    return (
+      <div className="text-center py-8 text-red-600">
+        {error}
+        <button
+          onClick={fetchLeaderboard}
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          다시 시도
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="mb-4">
-        <label className="block text-gray-700 text-xs font-bold mb-1">
-          선생님 성함
-        </label>
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-center mb-6">{grade}학년 명예의 전당</h2>
+      
+      <div className="mb-6">
         <input
           type="text"
           value={teacherName}
-          onChange={handleTeacherNameChange}
-          className={`shadow appearance-none border rounded w-full py-1.5 px-3 text-sm text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-            error ? 'border-red-500' : ''
-          }`}
-          placeholder="성함을 입력해주세요"
-          list="teacherNames"
+          onChange={(e) => setTeacherName(e.target.value)}
+          placeholder="선생님 이름을 입력하세요"
+          className="w-full p-3 border rounded-lg mb-4"
         />
-        <datalist id="teacherNames">
-          {ALLOWED_TEACHERS.map((name) => (
-            <option key={name} value={name} />
-          ))}
-        </datalist>
-        {error && (
-          <p className="text-red-500 text-xs mt-1">{error}</p>
-        )}
+        <button
+          onClick={handleStartQuiz}
+          className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-colors"
+        >
+          시험 시작하기
+        </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-4 mb-4">
-        <h3 className="text-lg font-bold mb-3 text-center">
-          <span className="inline-block mr-1">👑</span>
-          {grade}학년 이름 암기 명예의 전당
-          <span className="inline-block ml-1">👑</span>
-        </h3>
-        {currentGradeLeaderboard.length > 0 ? (
-          <div className="space-y-1.5">
-            {currentGradeLeaderboard.map((entry, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-1.5 bg-gray-50 rounded text-sm"
-              >
-                <div className="flex items-center">
-                  <span className="font-bold w-6">
+      <div className="space-y-4">
+        {entries.length > 0 ? (
+          entries.slice(0, 10).map((entry, index) => (
+            <div
+              key={`${entry.teacherName}-${entry.date}`}
+              className={`p-4 rounded-lg ${
+                index < 3 ? 'bg-yellow-50' : 'bg-white'
+              } shadow`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <span className="font-bold text-lg">
                     {index < 3 ? MEDAL_EMOJIS[index] : `${index + 1}.`}
                   </span>
-                  <span>{entry.teacherName}</span>
+                  <span className="font-semibold">{entry.teacherName}</span>
                 </div>
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-4">
                   <span className={`font-bold ${
                     index === 0 ? 'text-yellow-500' :
                     index === 1 ? 'text-gray-500' :
                     index === 2 ? 'text-orange-500' :
-                    'text-blue-600'
-                  }`}>{entry.score}점</span>
-                  <span className="text-gray-500 text-xs">{entry.date}</span>
+                    'text-blue-500'
+                  }`}>
+                    {entry.score}점
+                  </span>
+                  <span className="text-sm text-gray-500">{entry.date}</span>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))
         ) : (
-          <p className="text-gray-500 text-center text-sm">아직 기록이 없습니다.</p>
+          <div className="text-center text-gray-500 py-8">
+            아직 기록이 없습니다. 첫 번째 도전자가 되어보세요!
+          </div>
         )}
       </div>
-
-      <button
-        onClick={handleStartQuiz}
-        className="w-full bg-blue-500 text-white py-1.5 px-4 rounded text-sm hover:bg-blue-600 transition-colors"
-      >
-        아이들 만나러 가기
-      </button>
     </div>
   );
 } 

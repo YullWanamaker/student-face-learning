@@ -89,7 +89,7 @@ export default function Home() {
     setMode(newMode);
   };
 
-  const handleQuizComplete = (grade: 1 | 2 | 3, score: number) => {
+  const handleQuizComplete = async (grade: 1 | 2 | 3, score: number) => {
     setProgress(prev => {
       const newProgress = { ...prev };
       if (score === 100) {
@@ -101,24 +101,26 @@ export default function Home() {
       return newProgress;
     });
 
-    // 리더보드에 점수 추가
-    const leaderboardData = localStorage.getItem('leaderboard');
-    const leaderboard: LeaderboardType = leaderboardData ? JSON.parse(leaderboardData) : {
-      grade1: [],
-      grade2: [],
-      grade3: [],
-    };
-
     const teacherName = localStorage.getItem('currentTeacher');
     if (teacherName) {
-      const gradeKey = `grade${grade}` as keyof LeaderboardType;
-      leaderboard[gradeKey].push({
-        teacherName,
-        score,
-        date: new Date().toLocaleDateString(),
-        grade,
-      });
-      localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+      try {
+        const entry = {
+          teacherName,
+          score,
+          date: new Date().toLocaleDateString(),
+          grade,
+        };
+
+        await fetch('/api/leaderboard', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ grade, entry }),
+        });
+      } catch (error) {
+        console.error('Error updating leaderboard:', error);
+      }
     }
   };
 
