@@ -24,24 +24,24 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchLeaderboard = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(`/api/leaderboard?grade=${grade}`);
-      if (!response.ok) throw new Error('Failed to fetch leaderboard');
-      const data = await response.json();
-      setEntries(data || []);
-    } catch (err) {
-      setError('리더보드를 불러오는데 실패했습니다.');
-      console.error('Error fetching leaderboard:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [grade]);
-
   useEffect(() => {
-    fetchLeaderboard();
-  }, [fetchLeaderboard]);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(`/api/leaderboard?grade=${grade}`);
+        if (!response.ok) throw new Error('Failed to fetch leaderboard');
+        const data = await response.json();
+        setEntries(data || []);
+      } catch (err) {
+        setError('리더보드를 불러오는데 실패했습니다.');
+        console.error('Error fetching leaderboard:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, [grade]);
 
   const handleStartQuiz = () => {
     const trimmedName = teacherName.trim();
@@ -78,7 +78,24 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
       <div className="text-center py-8 text-red-600">
         {error}
         <button
-          onClick={fetchLeaderboard}
+          onClick={() => {
+            const fetchData = async () => {
+              try {
+                setIsLoading(true);
+                const response = await fetch(`/api/leaderboard?grade=${grade}`);
+                if (!response.ok) throw new Error('Failed to fetch leaderboard');
+                const data = await response.json();
+                setEntries(data || []);
+              } catch (err) {
+                setError('리더보드를 불러오는데 실패했습니다.');
+                console.error('Error fetching leaderboard:', err);
+              } finally {
+                setIsLoading(false);
+              }
+            };
+            
+            fetchData();
+          }}
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           다시 시도
