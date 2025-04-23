@@ -77,7 +77,7 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-center mb-6 text-gray-900">{grade}학년 명예의 전당</h2>
+      <h2 className="text-2xl font-bold text-center mb-6 text-black">{grade}학년 이름 암기 명예의 전당</h2>
       
       <div className="mb-6">
         <input
@@ -85,11 +85,11 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
           value={teacherName}
           onChange={(e) => setTeacherName(e.target.value)}
           placeholder="선생님 이름을 입력하세요"
-          className="w-full p-3 border rounded-lg mb-4 text-gray-900"
+          className="w-full p-3 border rounded-lg mb-4 text-black placeholder-gray-500"
         />
         <button
           onClick={handleStartQuiz}
-          className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-colors"
+          className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-colors font-semibold"
         >
           시험 시작하기
         </button>
@@ -106,27 +106,27 @@ export default function Leaderboard({ grade, onStartQuiz }: LeaderboardProps) {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <span className="font-bold text-lg text-gray-900">
+                  <span className="font-bold text-lg text-black">
                     {index < 3 ? MEDAL_EMOJIS[index] : `${index + 1}.`}
                   </span>
-                  <span className="font-semibold text-gray-900">{entry.teacherName}</span>
+                  <span className="font-semibold text-black">{entry.teacherName}</span>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <span className={`font-bold ${
-                    index === 0 ? 'text-yellow-500' :
-                    index === 1 ? 'text-gray-500' :
-                    index === 2 ? 'text-orange-500' :
-                    'text-blue-500'
+                  <span className={`font-bold text-lg ${
+                    index === 0 ? 'text-yellow-600' :
+                    index === 1 ? 'text-gray-600' :
+                    index === 2 ? 'text-orange-600' :
+                    'text-blue-600'
                   }`}>
                     {entry.score}점
                   </span>
-                  <span className="text-sm text-gray-700">{entry.date}</span>
+                  <span className="text-sm text-gray-900">{entry.date}</span>
                 </div>
               </div>
             </div>
           ))
         ) : (
-          <div className="text-center text-gray-700 py-8">
+          <div className="text-center text-gray-900 py-8 font-medium">
             아직 기록이 없습니다. 첫 번째 도전자가 되어보세요!
           </div>
         )}

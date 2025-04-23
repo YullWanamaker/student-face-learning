@@ -149,10 +149,10 @@ export default function QuizMode({ students, onComplete, onViewLeaderboard }: Qu
     <div className="space-y-6">
       <div className="text-center mb-4">
         <div className="mb-2">
-          <span className="text-lg font-bold">{currentQuestion + 1}</span>
-          <span className="text-gray-500">/{students.length}</span>
+          <span className="text-lg font-bold text-gray-900">{currentQuestion + 1}</span>
+          <span className="text-gray-900">/{students.length}</span>
         </div>
-        <div className="text-xl mb-2">이 학생의 이름은 무엇인가요?</div>
+        <div className="text-xl mb-2 text-gray-900 font-semibold">이 학생의 이름은 무엇인가요?</div>
         <div className="relative w-48 h-48 mx-auto rounded-lg overflow-hidden">
           <Image
             src={currentQuizQuestion.correctStudent.image}
@@ -186,7 +186,7 @@ export default function QuizMode({ students, onComplete, onViewLeaderboard }: Qu
         ))}
       </div>
 
-      <div className="text-center text-lg font-bold text-blue-600">
+      <div className="text-center text-lg font-bold text-gray-900">
         현재 점수: {currentScore}점 (맞춘 개수: {correctAnswers}개)
       </div>
     </div>

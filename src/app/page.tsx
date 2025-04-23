@@ -136,8 +136,8 @@ export default function Home() {
         }}
       >
         <div className="max-w-md mx-auto bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-8 text-center relative">
-          <h1 className="text-3xl font-bold mb-2 text-gray-900">아이들 얼굴 익히기</h1>
-          <p className="text-sm text-gray-800 text-center mb-8 px-4">&ldquo;너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라&rdquo; (마태복음 6:33)</p>
+          <h1 className="text-3xl font-bold mb-2 text-black">아이들 얼굴 익히기</h1>
+          <p className="text-base text-gray-900 text-center mb-8 px-4 font-medium">&ldquo;너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라&rdquo; (마태복음 6:33)</p>
           <div className="space-y-4">
             <button
               onClick={handleStartStudy}
