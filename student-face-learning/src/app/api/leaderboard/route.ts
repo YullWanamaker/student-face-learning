@@ -11,8 +11,8 @@ export async function GET(request: Request) {
   }
 
   try {
-    const leaderboard = await kv.get<LeaderboardEntry[]>(`leaderboard_${grade}`);
-    return NextResponse.json(leaderboard || []);
+    const entries = await kv.get<LeaderboardEntry[]>(`leaderboard:grade${grade}`) || [];
+    return NextResponse.json(entries);
   } catch (error) {
     console.error('Error fetching leaderboard:', error);
     return NextResponse.json({ error: 'Failed to fetch leaderboard' }, { status: 500 });
@@ -27,21 +27,33 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Grade and entry are required' }, { status: 400 });
     }
 
-    const key = `leaderboard_${grade}`;
-    const currentLeaderboard = await kv.get<LeaderboardEntry[]>(key) || [];
+    const key = `leaderboard:grade${grade}`;
+    const entries = await kv.get<LeaderboardEntry[]>(key) || [];
     
-    // 같은 이름의 최신 점수만 유지
-    const filteredLeaderboard = currentLeaderboard.filter(
-      item => item.teacherName.toLowerCase() !== entry.teacherName.toLowerCase()
+    // 같은 선생님의 기존 점수를 찾습니다
+    const existingIndex = entries.findIndex(
+      e => e.teacherName.toLowerCase() === entry.teacherName.toLowerCase()
     );
-    
-    const newLeaderboard = [...filteredLeaderboard, entry]
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 100); // 상위 100개 기록만 유지
 
-    await kv.set(key, newLeaderboard);
+    if (existingIndex !== -1) {
+      // 기존 점수가 있다면 업데이트
+      entries[existingIndex] = entry;
+    } else {
+      // 새로운 점수 추가
+      entries.push(entry);
+    }
+
+    // 점수와 날짜로 정렬
+    const sortedEntries = entries.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+
+    // 상위 10개만 저장
+    const topEntries = sortedEntries.slice(0, 10);
     
-    return NextResponse.json(newLeaderboard);
+    await kv.set(key, topEntries);
+    return NextResponse.json(topEntries);
   } catch (error) {
     console.error('Error updating leaderboard:', error);
     return NextResponse.json({ error: 'Failed to update leaderboard' }, { status: 500 });
