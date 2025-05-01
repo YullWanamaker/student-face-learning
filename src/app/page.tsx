@@ -70,6 +70,7 @@ export default function Home() {
   const [students, setStudents] = useState(originalStudents);
   const [progress, setProgress] = useState<UserProgress>(initialProgress);
   const [audio] = useState(new Audio('/audio/background-music.mp3'));
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     audio.loop = true;
@@ -83,6 +84,17 @@ export default function Home() {
       audio.currentTime = 0;
     };
   }, [audio]);
+
+  const toggleMusic = () => {
+    if (isPlaying) {
+      audio.pause();
+    } else {
+      audio.play().catch(error => {
+        console.log('오디오 재생 실패:', error);
+      });
+    }
+    setIsPlaying(!isPlaying);
+  };
 
   const handleStartQuiz = () => {
     setShowContent(true);
@@ -139,7 +151,7 @@ export default function Home() {
   };
 
   if (!showContent) {
-  return (
+    return (
       <main 
         className="min-h-screen w-full bg-cover bg-center bg-no-repeat p-4 fixed inset-0 overflow-y-auto"
         style={{
@@ -150,6 +162,13 @@ export default function Home() {
         }}
       >
         <div className="max-w-md mx-auto bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-8 text-center relative">
+          <button
+            onClick={toggleMusic}
+            className="absolute top-2 right-2 p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+            title={isPlaying ? "음악 정지" : "음악 재생"}
+          >
+            {isPlaying ? "🔇" : "🔊"}
+          </button>
           <h1 className="text-3xl font-bold mb-2 text-black">아이들 얼굴 익히기</h1>
           <p className="text-base text-gray-900 text-center mb-8 px-4 font-medium">&ldquo;너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라&rdquo; (마태복음 6:33)</p>
           <div className="space-y-4">
@@ -183,6 +202,13 @@ export default function Home() {
         }}
       >
         <div className="max-w-md mx-auto bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-8 text-center relative my-8">
+          <button
+            onClick={toggleMusic}
+            className="absolute top-2 right-2 p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+            title={isPlaying ? "음악 정지" : "음악 재생"}
+          >
+            {isPlaying ? "🔇" : "🔊"}
+          </button>
           <button
             onClick={() => {
               setShowContent(false);
@@ -233,6 +259,13 @@ export default function Home() {
       >
         <div className="max-w-md mx-auto bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-8 text-center relative my-8">
           <button
+            onClick={toggleMusic}
+            className="absolute top-2 right-2 p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+            title={isPlaying ? "음악 정지" : "음악 재생"}
+          >
+            {isPlaying ? "🔇" : "🔊"}
+          </button>
+          <button
             onClick={() => {
               setShowContent(false);
               setMode('start');
@@ -282,6 +315,13 @@ export default function Home() {
       >
         <div className="max-w-md mx-auto bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-8 text-center relative my-8">
           <button
+            onClick={toggleMusic}
+            className="absolute top-2 right-2 p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+            title={isPlaying ? "음악 정지" : "음악 재생"}
+          >
+            {isPlaying ? "🔇" : "🔊"}
+          </button>
+          <button
             onClick={() => setMode('select')}
             className="absolute top-4 left-4 text-gray-800 hover:text-gray-900"
         >
@@ -318,6 +358,13 @@ export default function Home() {
       }}
     >
       <div className="max-w-md mx-auto bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-6 mt-8 relative z-10">
+        <button
+          onClick={toggleMusic}
+          className="absolute top-2 right-2 p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+          title={isPlaying ? "음악 정지" : "음악 재생"}
+        >
+          {isPlaying ? "🔇" : "🔊"}
+        </button>
         <div className="flex items-center justify-between mb-4">
           <button
             onClick={() => setMode(isStudyMode ? 'selectStudy' : 'select')}
