@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LearningMode, UserProgress } from '@/types/student';
 import StudyMode from '@/components/StudyMode';
 import QuizMode from '@/components/QuizMode';
@@ -69,6 +69,20 @@ export default function Home() {
   const [showContent, setShowContent] = useState(false);
   const [students, setStudents] = useState(originalStudents);
   const [progress, setProgress] = useState<UserProgress>(initialProgress);
+  const [audio] = useState(new Audio('/audio/background-music.mp3'));
+
+  useEffect(() => {
+    audio.loop = true;
+    audio.volume = 0.3; // 음량 조절 (0.0 ~ 1.0)
+    audio.play().catch(error => {
+      console.log('오디오 자동 재생이 차단되었습니다:', error);
+    });
+
+    return () => {
+      audio.pause();
+      audio.currentTime = 0;
+    };
+  }, [audio]);
 
   const handleStartQuiz = () => {
     setShowContent(true);
